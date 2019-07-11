@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,8 +11,6 @@ import com.example.instagram.model.Post;
 import com.parse.ParseImageView;
 
 import org.parceler.Parcels;
-
-import java.util.Date;
 
 public class PostDetailsActivity extends AppCompatActivity {
 
@@ -23,7 +20,7 @@ public class PostDetailsActivity extends AppCompatActivity {
     ImageView ivLogout;
     ParseImageView ivImage;
     TextView tvCaption;
-    EditText tvTime;
+    TextView tvTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +35,12 @@ public class PostDetailsActivity extends AppCompatActivity {
         tvTime = findViewById(R.id.tvTime);
 
         post = Parcels.unwrap(getIntent().getParcelableExtra(Post.class.getSimpleName()));
-        Date createdAt = post.getCreatedAt();
-//        tvTime.setText(createdAt.toString());
         tvCaption.setText(post.getDescription());
         ivImage.setParseFile(post.getImage());
         ivImage.setParseFile(post.getMedia());
         ivImage.loadInBackground();
+        tvTime.setText(PostAdapter.getRelativeTimeAgo(post.getCreatedAt().toString()));
+
         ivHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

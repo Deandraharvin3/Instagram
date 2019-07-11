@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.instagram.model.Post;
+import com.example.instagram.model.User;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -78,9 +79,11 @@ public class PostActivity extends AppCompatActivity {
 
     private void createPost(String description, ParseFile imageFile, ParseUser user) {
         final Post newPost = new Post();
+        final User newUser = new User();
         newPost.setDescription(description);
         newPost.setImage(imageFile);
         newPost.setUser(user);
+        newUser.setUsername(MainActivity.name);
 
         newPost.saveInBackground(new SaveCallback() {
             @Override
@@ -137,9 +140,12 @@ public class PostActivity extends AppCompatActivity {
     }
     private void savePost(String description, ParseUser parseUser, File photoFile) {
         Post post = new Post();
+        User user = new User();
         post.setDescription(description);
         post.setUser(parseUser);
         post.setImage(new ParseFile(photoFile));
+        user.setUsername(MainActivity.name);
+
         post.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {

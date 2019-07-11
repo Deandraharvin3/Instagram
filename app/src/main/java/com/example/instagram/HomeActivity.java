@@ -40,12 +40,12 @@ public class HomeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         logout = findViewById(R.id.btnLogout);
         ivPost = findViewById(R.id.ivHome);
-//        refresh = findViewById(R.id.btnRefresh);
         imageView = findViewById(R.id.ivImage);
         posts = new ArrayList<>();
         adapter = new PostAdapter(posts);
         rvPost = findViewById(R.id.rvPost);
-        rvPost.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rvPost.setLayoutManager(linearLayoutManager);
         rvPost.setAdapter(adapter);
 
         swipeContainer = findViewById(R.id.swipeRefresh);
@@ -54,8 +54,6 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
                 fetchTimelineAsync();
             }
         });
@@ -81,13 +79,6 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
-        //final Post post = new Post();
-//        refresh.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                loadTopPosts();
-//            }
-//        });
         ivPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,28 +100,6 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
-
-//    private void loadTopPosts() {
-//        final Post.Query postQuery = new Post.Query();
-//        postQuery.getTop().withUser();
-//        postQuery.findInBackground(new FindCallback<Post>() {
-//            @Override
-//            public void done(List<Post> objects, ParseException e) {
-//                if (e == null) {
-//                    for (int i = 0; i < objects.size(); i++) {
-//                        Log.d("Home Activity", "Post[" + i + "] = "
-//                                + objects.get(i).getDescription()
-//                                + "\nusername = " + objects.get(i).getUser().getUsername()
-//                        );
-//                    }
-//                    swipeContainer.setRefreshing(false);
-//                } else {
-//                    Log.e(TAG, "Error");
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//    }
 
     public void fetchTimelineAsync() {
         adapter.clear();
