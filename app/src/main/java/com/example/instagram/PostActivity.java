@@ -72,7 +72,6 @@ public class PostActivity extends AppCompatActivity {
                 final ParseFile parseFile = new ParseFile(file);
                 createPost(description, parseFile, user);
                 savePost(description, user, photoFile);
-
             }
         });
     }
@@ -100,12 +99,6 @@ public class PostActivity extends AppCompatActivity {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Create a File reference to access to future access
         photoFile = getPhotoFileUri(photoFileName);
-        // TODO Get rid of this if it is not neededFile photoFile = getPhotoFileUri(photoFileName);
-
-        //ParseFile parseFile = new ParseFile(photoFile);
-        // wrap File object into a content provider
-        // required for API >= 24
-        // See https://guides.codepath.com/android/Sharing-Content-with-Intents#sharing-files-with-api-24-or-higher
         Uri fileProvider = FileProvider.getUriForFile(PostActivity.this, "com.codepath.fileprovider", photoFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
 
@@ -136,9 +129,6 @@ public class PostActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 // by this point we have the camera photo on disk
                 Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
-                // RESIZE BITMAP, see section below
-                // Load the taken image into a preview
-//                ImageView ivPreview = (ImageView) findViewById(R.id.ivImage);
                 image.setImageBitmap(takenImage);
             } else { // Result was a failure
                 Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
@@ -166,5 +156,4 @@ public class PostActivity extends AppCompatActivity {
         Intent i = new Intent(PostActivity.this, HomeActivity.class);
         startActivity(i);
     }
-
 }

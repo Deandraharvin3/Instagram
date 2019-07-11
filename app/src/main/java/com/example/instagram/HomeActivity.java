@@ -2,6 +2,7 @@ package com.example.instagram;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +24,7 @@ import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
     private final String TAG = "HomeActivity";
+    private SwipeRefreshLayout swipeContainer;
     ImageView logout;
     Button refresh;
     ImageView ivPost;
@@ -41,23 +43,39 @@ public class HomeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         logout = findViewById(R.id.btnLogout);
         ivPost = findViewById(R.id.ivPost);
-        refresh = findViewById(R.id.btnRefresh);
+//        refresh = findViewById(R.id.btnRefresh);
         imageView = findViewById(R.id.ivImage);
         posts = new ArrayList<>();
         adapter = new PostAdapter(posts);
         rvPost = findViewById(R.id.rvPost);
         rvPost.setLayoutManager(new LinearLayoutManager(this));
         rvPost.setAdapter(adapter);
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeRefresh);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                fetchTimelineAsync();
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         final ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         query.findInBackground(new FindCallback<Post>() {
             @Override
             public void done(List<Post> objects, ParseException e) {
                 if (e == null) {
-                    for(int i = 0; i < objects.size(); i++) {
+                    for (int i = 0; i < objects.size(); i++) {
                         Post post = objects.get(i);
                         posts.add(post);
-                        adapter.notifyItemInserted(posts.size() -1);
+                        adapter.notifyItemInserted(posts.size() - 1);
                     }
                 } else {
                     e.printStackTrace();
@@ -65,17 +83,17 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
         //final Post post = new Post();
-        refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadTopPosts();
-            }
-        });
+//        refresh.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                loadTopPosts();
+//            }
+//        });
         ivPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Post post = new Post();
-                Intent i  = new Intent(HomeActivity.this, PostActivity.class);
+                Intent i = new Intent(HomeActivity.this, PostActivity.class);
                 startActivity(i);
             }
         });
@@ -92,21 +110,44 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
-    private void loadTopPosts() {
-        final Post.Query postQuery = new Post.Query();
-        postQuery.getTop().withUser();
-        postQuery.findInBackground(new FindCallback<Post>() {
+
+//    private void loadTopPosts() {
+//        final Post.Query postQuery = new Post.Query();
+//        postQuery.getTop().withUser();
+//        postQuery.findInBackground(new FindCallback<Post>() {
+//            @Override
+//            public void done(List<Post> objects, ParseException e) {
+//                if (e == null) {
+//                    for (int i = 0; i < objects.size(); i++) {
+//                        Log.d("Home Activity", "Post[" + i + "] = "
+//                                + objects.get(i).getDescription()
+//                                + "\nusername = " + objects.get(i).getUser().getUsername()
+//                        );
+//                    }
+//                    swipeContainer.setRefreshing(false);
+//                } else {
+//                    Log.e(TAG, "Error");
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//    }
+
+    public void fetchTimelineAsync() {
+        adapter.clear();
+        final ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+        query.findInBackground(new FindCallback<Post>() {
             @Override
             public void done(List<Post> objects, ParseException e) {
                 if (e == null) {
                     for (int i = 0; i < objects.size(); i++) {
-                        Log.d("Home Activity", "Post[" + i + "] = "
-                                + objects.get(i).getDescription()
-                                + "\nusername = " + objects.get(i).getUser().getUsername()
-                        );
+                        Post post = objects.get(i);
+                        posts.add(post);
+                        adapter.notifyItemInserted(posts.size() - 1);
                     }
+                    swipeContainer.setRefreshing(false);
+
                 } else {
-                    Log.e(TAG, "Error");
                     e.printStackTrace();
                 }
             }
