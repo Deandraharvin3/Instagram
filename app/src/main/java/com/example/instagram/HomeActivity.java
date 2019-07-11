@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import com.example.instagram.model.Post;
@@ -23,10 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
-    private final String TAG = "HomeActivity";
     private SwipeRefreshLayout swipeContainer;
     ImageView logout;
-    Button refresh;
     ImageView ivPost;
     ArrayList<Post> posts;
     RecyclerView rvPost;
@@ -42,7 +39,7 @@ public class HomeActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         logout = findViewById(R.id.btnLogout);
-        ivPost = findViewById(R.id.ivPost);
+        ivPost = findViewById(R.id.ivHome);
 //        refresh = findViewById(R.id.btnRefresh);
         imageView = findViewById(R.id.ivImage);
         posts = new ArrayList<>();
@@ -50,7 +47,8 @@ public class HomeActivity extends AppCompatActivity {
         rvPost = findViewById(R.id.rvPost);
         rvPost.setLayoutManager(new LinearLayoutManager(this));
         rvPost.setAdapter(adapter);
-        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeRefresh);
+
+        swipeContainer = findViewById(R.id.swipeRefresh);
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -68,6 +66,7 @@ public class HomeActivity extends AppCompatActivity {
                 android.R.color.holo_red_light);
 
         final ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+        query.orderByDescending("createdAt");
         query.findInBackground(new FindCallback<Post>() {
             @Override
             public void done(List<Post> objects, ParseException e) {
@@ -136,6 +135,7 @@ public class HomeActivity extends AppCompatActivity {
     public void fetchTimelineAsync() {
         adapter.clear();
         final ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+        query.orderByDescending("createdAt");
         query.findInBackground(new FindCallback<Post>() {
             @Override
             public void done(List<Post> objects, ParseException e) {

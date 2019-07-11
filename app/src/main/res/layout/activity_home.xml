@@ -46,7 +46,7 @@
         app:srcCompat="@drawable/instagram_user_outline_24" />
 
     <ImageView
-        android:id="@+id/ivPost"
+        android:id="@+id/ivHome"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginStart="8dp"

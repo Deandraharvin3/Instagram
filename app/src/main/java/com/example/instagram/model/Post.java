@@ -6,12 +6,15 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.Date;
+
 @ParseClassName("Post")
 public class Post extends ParseObject {
 
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_IMAGE = "image";
     public static final String KEY_USER = "user";
+    public static final String KEY_DATE = "createdAt";
 
 //    public Post() {
 //        super();
@@ -42,6 +45,12 @@ public class Post extends ParseObject {
     }
     public void setMedia(ParseFile parseFile) {
         put("image", parseFile);
+    }
+    public Date getCreatedAt(){
+        return getDate(KEY_DATE);
+    }
+    public void setCreatedAt(Date createdAt) {
+        put(KEY_DATE, createdAt);
     }
 
     public static class Query extends ParseQuery<Post> {
